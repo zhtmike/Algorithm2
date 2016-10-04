@@ -9,8 +9,6 @@ class Heap(object):
         self.heap_list = arg[:]
         hq.heapify(self.heap_list)
 
-    def
-
 
 if __name__ == '__main__':
     tmp = [2, 3, 4]
