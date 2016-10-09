@@ -96,7 +96,7 @@ class Assign1(object):
 
         # iterate the remaining node until all nodes are explored.
         total_cost = 0
-        while heap.pq:
+        while heap.entry_finder:
             nearest_node, cost = heap.pop_task()
             total_cost += cost
             check_list[nearest_node] = True

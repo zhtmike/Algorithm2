@@ -52,4 +52,4 @@ class Heap(object):
             if task is not self.REMOVED:
                 del self.entry_finder[task]
                 return task, priority
-        return None, 0
+        raise KeyError('pop from an empty priority queue')
