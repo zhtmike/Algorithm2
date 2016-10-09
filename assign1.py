@@ -91,8 +91,7 @@ class Assign1(object):
         # Pick up a random node and set up the heap list
         initial_node = next(iter(adj_list.keys()))
         check_list[initial_node] = True
-        pq = [[adj_list[initial_node].get(node, inf), node] for node in adj_list]
-        pq.remove([inf, initial_node])
+        pq = [[adj_list[initial_node].get(node, inf), node] for node in adj_list if node is not initial_node]
         heap = Heap(pq)
 
         # iterate the remaining node until all nodes are explored.
