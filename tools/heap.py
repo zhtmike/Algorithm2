@@ -44,7 +44,7 @@ class Heap(object):
 
     def pop_task(self):
         """
-        Remove and return the lowest priority task. Raise KeyError if empty.
+        Remove and return the lowest priority task.
         :return: (str, int) task name with lowest priority, lowest priority
         """
         while self.pq:
