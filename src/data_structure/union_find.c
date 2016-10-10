@@ -10,55 +10,113 @@ typedef struct Union_Finder {
     struct Union_Finder *leader;
 } union_finder;
 
-int find(union_finder *node) {
+union_finder *nodes[100];
+int counter = 0;
+
+int find(int name) {
     /* Return the name of the group */
-    return node->leader->name;
+    return nodes[name]->leader->name;
 }
 
-void merge(union_finder *node1, union_finder *node2, union_finder *nodes[], int size) {
+void merge(int name1, int name2) {
     /* Merge the unions containing node1 and node2 ,
-    And left the remain nodes unchanged. */
+     * And left the remain nodes unchanged.
+     */
 
     // Check which union is bigger
     union_finder *small_union, *large_union;
-    if (node1->leader->size >= node2->leader->size) {
-        large_union = node1->leader;
-        small_union = node2->leader;
+    if (nodes[name1]->leader->size >= nodes[name2]->leader->size) {
+        large_union = nodes[name1]->leader;
+        small_union = nodes[name2]->leader;
     } else {
-        large_union = node2->leader;
-        small_union = node1->leader;
+        large_union = nodes[name2]->leader;
+        small_union = nodes[name1]->leader;
     }
 
     // Assign nodes in small union to the large union
     large_union->size += small_union->size;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < counter; ++i) {
         if (nodes[i]->leader == small_union)
             nodes[i]->leader = large_union;
     }
 }
 
-void initialize(union_finder *nodes[], int size, int names[]) {
-    /* Initiate all the nodes to be in its own union */
-    for (int i = 0; i < size; ++i) {
-        nodes[i] = malloc(sizeof(union_finder));
-        nodes[i]->size = 1;
-        nodes[i]->name = names[i];
-        nodes[i]->leader = nodes[i];
-    }
+void insert() {
+    /* Insert Node and assign it to be its own Union */
+    nodes[counter] = malloc(sizeof(union_finder));
+    nodes[counter]->size = 1;
+    nodes[counter]->name = counter;
+    nodes[counter]->leader = nodes[counter];
+    counter++;
 }
 
-int main() {
-    const int NUM = 4;
-    union_finder *u[NUM];
-    int names[4] = {0, 1, 2, 3};
-    initialize(u, NUM, names);
-
-    merge(u[1], u[2], u, NUM);
-    merge(u[2], u[3], u, NUM);
-
-    for (int i = 0; i < NUM; ++i) {
-        printf("%i\n", find(u[i]));
+void clear() {
+    for (int i = 0; i < counter; ++i) {
+        free(nodes[i]);
     }
+    counter = 0;
+}
 
-    return 0;
+static PyObject *unionFinder_find(PyObject *self, PyObject *args) {
+    /* Wrapper of find.
+     * arg: name
+     */
+    int name;
+    PyArg_ParseTuple(args, "i", &name);
+    if (name>=counter)
+        return PyExc_IndexError;
+    return Py_BuildValue("i", find(name));
+}
+
+static PyObject *unionFinder_insert(PyObject *self, PyObject *args) {
+    /* Wrapper of insert.
+     * arg: total number
+     */
+    int num;
+    PyArg_ParseTuple(args, "i", &num);
+    for (int i = 0; i < num; ++i) {
+        insert();
+    }
+    return Py_BuildValue("");
+}
+
+static PyObject *unionFinder_merge(PyObject *self, PyObject *args) {
+    /* Wrapper of merge
+     * arg: name 1, name 2
+     */
+    int a, b;
+    PyArg_ParseTuple(args, "ii", &a, &b);
+    merge(a, b);
+    return Py_BuildValue("");
+}
+
+static PyObject *unionFinder_clear(PyObject *self, PyObject *args) {
+    /* Wrapper of merge
+     * arg: name 1, name 2
+     */
+    clear();
+    return Py_BuildValue("");
+}
+
+static char unionFinder_docs[] =
+        "find(): find the leader of the node\ninsert(): insert n nodes\nmerge(): merge the union\nclear(): clear the nodes\n";
+
+static PyMethodDef unionFinder_funcs[] = {
+        {"insert", (PyCFunction) unionFinder_insert, METH_VARARGS, unionFinder_docs},
+        {"find",   (PyCFunction) unionFinder_find,   METH_VARARGS, unionFinder_docs},
+        {"merge",  (PyCFunction) unionFinder_merge,  METH_VARARGS, unionFinder_docs},
+        {"clear",  (PyCFunction) unionFinder_clear,  METH_VARARGS, unionFinder_docs},
+        {NULL, NULL, 0, NULL}
+};
+
+static struct PyModuleDef unionFinder = {
+        PyModuleDef_HEAD_INIT,
+        "unionFinder",
+        "",
+        -1,
+        unionFinder_funcs
+};
+
+PyMODINIT_FUNC PyInit_unionFinder(void) {
+    return PyModule_Create(&unionFinder);
 }
