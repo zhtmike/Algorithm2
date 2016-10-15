@@ -24,7 +24,8 @@ class Assign1(object):
             total_num = int(csv_file.readline())
             remain = reader(csv_file, delimiter=' ')
             for row in remain:
-                job_list.append([int(x) for x in row])
+                weight, length = map(int, row)
+                job_list.append((weight, length))
         assert total_num == len(job_list)
         return job_list
 
@@ -41,8 +42,9 @@ class Assign1(object):
             total_node, total_edge = map(int, csv_file.readline().split(maxsplit=1))
             remain = reader(csv_file, delimiter=' ')
             for row in remain:
-                adjacent_list[row[0]][row[1]] = int(row[2])
-                adjacent_list[row[1]][row[0]] = int(row[2])
+                node1, node2, cost = row[0], row[1], int(row[2])
+                adjacent_list[node1][node2] = int(cost)
+                adjacent_list[node2][node1] = int(cost)
         # check the total number of nodes and edges
         assert len(adjacent_list) == total_node
         assert sum([len(sub_dict) for sub_dict in adjacent_list.values()]) / 2 == total_edge
