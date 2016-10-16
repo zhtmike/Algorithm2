@@ -26,6 +26,8 @@ class UnionFinder(object):
         :param node_1: (int) index of the node
         :param node_2: (int) index of the node
         """
+        if node_1 == node_2 or self.union[node_1] == self.union[node_2]:
+            return
         # compare union containing node 1 and node 2
         leader_1, leader_2 = self.union[node_1], self.union[node_2]
         if self.union_count[leader_1] >= self.union_count[leader_2]:
