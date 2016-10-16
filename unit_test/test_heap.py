@@ -1,4 +1,4 @@
-from unittest import TestCase, main
+from unittest import TestCase
 
 from tools.heap import Heap
 
@@ -35,6 +35,3 @@ class TestHeap(TestCase):
         self.assertDictEqual({'A': [5, 'A'], 'C': [2, 'C']}, self.heap.entry_finder)
         self.assertListEqual([2, 'C'], self.heap.pq[0])
 
-
-if __name__ == '__main__':
-    main()

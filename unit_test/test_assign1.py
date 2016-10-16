@@ -1,5 +1,5 @@
 from os.path import join
-from unittest import main, TestCase
+from unittest import TestCase
 
 from assign1 import Assign1
 
@@ -33,7 +33,3 @@ class TestAssign1(TestCase):
 
     def test_question_three(self):
         self.assertEqual(12, self.assign1.question_three(self.graph_sample1))
-
-
-if __name__ == '__main__':
-    main()
