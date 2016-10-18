@@ -1,7 +1,7 @@
 from csv import reader
 from operator import itemgetter
 
-from tools.union_finder import UnionFinder
+from src.union_finder import UnionFinder
 
 
 class Assign2(object):
@@ -44,9 +44,9 @@ class Assign2(object):
             total_node, num_bits = map(int, csv_file.readline().split())
             remain = reader(csv_file, delimiter=' ')
             for row in remain:
-                ints = [int(x) for x in row[:-1]]
-                assert len(ints) == num_bits
-                node_list.append(ints)
+                bits = ''.join(row)
+                assert len(bits) == num_bits, 'len = ' + str(len(row))
+                node_list.append(bits)
         # check the total number of nodes
         # assert len(node_list) == total_node
         return node_list
@@ -70,7 +70,6 @@ class Assign2(object):
         :param num_clusters: (int) the total number of clusters k
         :return: (int) the maximum distance between k clusters
         """
-
         edge_list, node_list = self.read_edge_list(txt_name)
         sorted_edge = sorted(edge_list, key=itemgetter(2))
         # insert all nodes to the union find structure
@@ -88,16 +87,19 @@ class Assign2(object):
     def question_two(self, txt_name, N=3):
         node_list = self.read_node_list(txt_name)
         uf = UnionFinder(len(node_list))
+        node_dict = {}
         for i in range(len(node_list)):
-            for j in range(len(node_list)):
-                if node_list[i] == node_list[j]:
-                    uf.merge(i, j)
+            j = node_dict.get(node_list[i], -1)
+            if j == -1:
+                node_dict[node_list[i]] = i
+            else:
+                uf.merge(i, j)
 
-        for n in range(1, N):
-            for i in range(len(node_list)):
-                for j in range(len(node_list)):
-                    if self.hamming(node_list[i], node_list[j]) == n:
-                        uf.merge(i, j)
+        # for n in range(1, N):
+        #     for i in range(len(node_list)):
+        #         for j in range(len(node_list)):
+        #             if self.hamming(node_list[i], node_list[j]) == n:
+        #                 uf.merge(i, j)
 
         unions = set()
         for i in uf.union:
@@ -106,5 +108,6 @@ class Assign2(object):
 
 if __name__ == '__main__':
     assign2 = Assign2()
-    print(assign2.question_one('data/assign2/_fe8d0202cd20a808db6a4d5d06be62f4_clustering1.txt'))
+    # print(assign2.question_one('data/assign2/_fe8d0202cd20a808db6a4d5d06be62f4_clustering1.txt'))
     print(assign2.question_two('data/assign2/_fe8d0202cd20a808db6a4d5d06be62f4_clustering_big.txt'))
+    # print(assign2.question_two('data/assign2/test_case/q22.txt'))
