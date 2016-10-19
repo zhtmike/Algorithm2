@@ -1,11 +1,11 @@
 from unittest import TestCase
 
-from tools.union_finder import UnionFinder
+from cython_module.union_find import UnionFind
 
 
 class TestUnionFinder(TestCase):
     def setUp(self):
-        self.uf = UnionFinder(4)
+        self.uf = UnionFind(4)
 
     def tearDown(self):
         self.uf = None

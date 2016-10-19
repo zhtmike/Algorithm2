@@ -1,7 +1,9 @@
+import itertools as iter
 from csv import reader
+from ctypes import create_unicode_buffer
 from operator import itemgetter
 
-from src.union_finder import UnionFinder
+from cython_module.union_find import UnionFinder
 
 
 class Assign2(object):
@@ -37,7 +39,7 @@ class Assign2(object):
         Read the first line as total number of nodes, length of the bits
         Read the remaining part as a list of nodes, with each node's location is represented a binary string
         :param txt_name: (str) location of the txt
-        :return: (list) nodes list
+        :return: (str) nodes list
         """
         node_list = []
         with open(txt_name, 'r') as csv_file:
@@ -85,6 +87,12 @@ class Assign2(object):
         raise IndexError
 
     def question_two(self, txt_name, N=3):
+        """
+        Implement a max-spacing k-clustering with minimum space equals to N
+        :param txt_name: (str) location of the txt
+        :param N: (int) the min-spacing
+        :return: (int) number of clusters
+        """
         node_list = self.read_node_list(txt_name)
         uf = UnionFinder(len(node_list))
         node_dict = {}
@@ -95,19 +103,24 @@ class Assign2(object):
             else:
                 uf.merge(i, j)
 
-        # for n in range(1, N):
-        #     for i in range(len(node_list)):
-        #         for j in range(len(node_list)):
-        #             if self.hamming(node_list[i], node_list[j]) == n:
-        #                 uf.merge(i, j)
+        bit_length = len(node_list[0])
+        comb = [list(iter.combinations(range(bit_length), n)) for n in range(1, N)]
+        comb = list(iter.chain(*comb))
+        reverse = {'0': '1', '1': '0'}
+        for i in range(len(node_list)):
+            for case in comb:
+                dump = create_unicode_buffer(node_list[i][:])
+                for j in case:
+                    dump[j] = reverse[dump[j]]
+                ind = node_dict.get(dump.value, -1)
+                if ind != -1:
+                    uf.merge(i, ind)
 
-        unions = set()
-        for i in uf.union:
-            unions.add(uf.find(i))
+        unions = uf.print_all()
         return len(unions)
+
 
 if __name__ == '__main__':
     assign2 = Assign2()
-    # print(assign2.question_one('data/assign2/_fe8d0202cd20a808db6a4d5d06be62f4_clustering1.txt'))
+    print(assign2.question_one('data/assign2/_fe8d0202cd20a808db6a4d5d06be62f4_clustering1.txt'))
     print(assign2.question_two('data/assign2/_fe8d0202cd20a808db6a4d5d06be62f4_clustering_big.txt'))
-    # print(assign2.question_two('data/assign2/test_case/q22.txt'))
