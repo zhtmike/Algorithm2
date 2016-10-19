@@ -3,7 +3,7 @@ from csv import reader
 from ctypes import create_unicode_buffer
 from operator import itemgetter
 
-from cython_module.union_find import UnionFinder
+from cython_module.union_find import UnionFind
 
 
 class Assign2(object):
@@ -50,7 +50,7 @@ class Assign2(object):
                 assert len(bits) == num_bits, 'len = ' + str(len(row))
                 node_list.append(bits)
         # check the total number of nodes
-        # assert len(node_list) == total_node
+        assert len(node_list) == total_node
         return node_list
 
     @staticmethod
@@ -75,7 +75,7 @@ class Assign2(object):
         edge_list, node_list = self.read_edge_list(txt_name)
         sorted_edge = sorted(edge_list, key=itemgetter(2))
         # insert all nodes to the union find structure
-        uf = UnionFinder(max(node_list) + 1)
+        uf = UnionFind(max(node_list) + 1)
         count = len(node_list)  # number of cluster
         # scan all the edges until there are remains k clusters
         for node_a, node_b, cost in sorted_edge:
@@ -94,8 +94,9 @@ class Assign2(object):
         :return: (int) number of clusters
         """
         node_list = self.read_node_list(txt_name)
-        uf = UnionFinder(len(node_list))
+        uf = UnionFind(len(node_list))
         node_dict = {}
+        # scan the list and merge the node with same location into same union
         for i in range(len(node_list)):
             j = node_dict.get(node_list[i], -1)
             if j == -1:
@@ -104,8 +105,12 @@ class Assign2(object):
                 uf.merge(i, j)
 
         bit_length = len(node_list[0])
+
+        # combine the all possible cases into a single list
         comb = [list(iter.combinations(range(bit_length), n)) for n in range(1, N)]
         comb = list(iter.chain(*comb))
+
+        # if the distance is less than N, then merge into same union
         reverse = {'0': '1', '1': '0'}
         for i in range(len(node_list)):
             for case in comb:
@@ -115,7 +120,7 @@ class Assign2(object):
                 ind = node_dict.get(dump.value, -1)
                 if ind != -1:
                     uf.merge(i, ind)
-
+        # list all unions
         unions = uf.print_all()
         return len(unions)
 
