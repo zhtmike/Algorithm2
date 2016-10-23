@@ -15,7 +15,7 @@ class TestAssign2(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.assign1 = None
+        cls.assign2 = None
 
     def test_question_one(self):
         self.assertEqual(273, self.assign2.question_one(self.text_sample1, 3))

@@ -1,0 +1,4 @@
+# Package requirement
+Cython
+numpy
+numba
