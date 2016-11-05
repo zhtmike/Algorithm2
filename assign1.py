@@ -1,9 +1,9 @@
-from collections import defaultdict
 from csv import reader
 from itertools import accumulate
 from math import inf
 
 from tools.heap import Heap
+from tools.read_graph import read_undirected_graph
 
 
 class Assign1(object):
@@ -28,27 +28,6 @@ class Assign1(object):
                 job_list.append((weight, length))
         assert total_num == len(job_list)
         return job_list
-
-    @staticmethod
-    def read_graph(txt_name):
-        """
-        Read the first line as total number of nodes, total number of edges
-        Read the remaining part as a adjacent list of graph (node: cost)
-        :param txt_name: (str) location of the txt
-        :return: (dict) the adjacent list. i.e. {node1: {{node2: cost}, {node3: cost} ...} ...}
-        """
-        adjacent_list = defaultdict(dict)
-        with open(txt_name, 'r') as csv_file:
-            total_node, total_edge = map(int, csv_file.readline().split(maxsplit=1))
-            remain = reader(csv_file, delimiter=' ')
-            for row in remain:
-                node1, node2, cost = row[0], row[1], int(row[2])
-                adjacent_list[node1][node2] = int(cost)
-                adjacent_list[node2][node1] = int(cost)
-        # check the total number of nodes and edges
-        assert len(adjacent_list) == total_node
-        assert sum([len(sub_dict) for sub_dict in adjacent_list.values()]) / 2 == total_edge
-        return adjacent_list
 
     def question_one(self, txt_name):
         """
@@ -80,13 +59,14 @@ class Assign1(object):
         weighted_completion_time = [sorted_list[i][0] * completion_time[i] for i in range(len(sorted_list))]
         return sum(weighted_completion_time)
 
-    def question_three(self, txt_name):
+    @staticmethod
+    def question_three(txt_name):
         """
         Run Prism's minimum spanning tree algorithm and calculate the total cost of the minimum spanning tree
         :param txt_name: (str) location of the txt
         :return: (int) the total cost
         """
-        adj_list = self.read_graph(txt_name)
+        n, m, adj_list = read_undirected_graph(txt_name)
         # Set all the nodes to be non-explored
         check_list = {node: False for node in adj_list}
 

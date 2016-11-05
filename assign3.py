@@ -52,16 +52,16 @@ class Assign3(object):
         :param W: (int) knapsack size
         :return: (int) the value of optimal solution
         """
-        ma = np.zeros((n + 1, W + 1), dtype=np.uint)
+        ma = np.zeros((2, W + 1), dtype=np.uint)
         value, weight = nb.uint(0), nb.uint(0)
         for i in range(1, n + 1):
             for x in range(W + 1):
                 value, weight = items[i - 1]
                 if weight > x:
-                    ma[i, x] = ma[i - 1, x]
+                    ma[i % 2, x] = ma[(i - 1) % 2, x]
                 else:
-                    ma[i, x] = max(ma[i - 1, x], ma[i - 1, x - weight] + value)
-        return ma[n, W]
+                    ma[i % 2, x] = max(ma[(i - 1) % 2, x], ma[(i - 1) % 2, x - weight] + value)
+        return ma[n % 2, W]
 
     def question(self, txt_name):
         """
