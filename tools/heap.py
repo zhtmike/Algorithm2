@@ -1,5 +1,7 @@
 import heapq as hq
 
+from numpy import nan
+
 
 class Heap(object):
     """
@@ -13,7 +15,7 @@ class Heap(object):
         Heapify the entries if pq is not None.
         :param pq: list of entries
         """
-        self.REMOVED = '<removed-task>'
+        self.REMOVED = nan
         if not pq:
             self.pq = []
             self.entry_finder = {}

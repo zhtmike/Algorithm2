@@ -12,12 +12,12 @@ class Assign1(object):
     """
 
     @staticmethod
-    def read_weight_length(txt_name):
+    def read_weight_length(txt_name: str) -> list:
         """
         Read the first line as the total number,
         Read the remaining part as a list of (weight, length).
-        :param txt_name: (str) location of the txt
-        :return: (list) list of (weight, length)
+        :param txt_name: location of the txt
+        :return: list of (weight, length)
         """
         job_list = []
         with open(txt_name, 'r') as csv_file:
@@ -29,10 +29,10 @@ class Assign1(object):
         assert total_num == len(job_list)
         return job_list
 
-    def question_one(self, txt_name):
+    def question_one(self, txt_name: str) -> int:
         """
         Minimize the completion time by sorting the job according to weight - length
-        :param txt_name: (str) location of the txt
+        :param txt_name: location of the txt
         :return: total sum of weighted completion time
         """
         job_list = self.read_weight_length(txt_name)
@@ -44,10 +44,10 @@ class Assign1(object):
         weighted_completion_time = [sorted_list[i][0] * completion_time[i] for i in range(len(sorted_list))]
         return sum(weighted_completion_time)
 
-    def question_two(self, txt_name):
+    def question_two(self, txt_name: str) -> int:
         """
         Minimize the completion time by sorting the job according to weight / length
-        :param txt_name: (str) location of the txt
+        :param txt_name: location of the txt
         :return: total sum of weighted completion time
         """
         job_list = self.read_weight_length(txt_name)
@@ -60,11 +60,11 @@ class Assign1(object):
         return sum(weighted_completion_time)
 
     @staticmethod
-    def question_three(txt_name):
+    def question_three(txt_name: str) -> int:
         """
         Run Prism's minimum spanning tree algorithm and calculate the total cost of the minimum spanning tree
-        :param txt_name: (str) location of the txt
-        :return: (int) the total cost
+        :param txt_name: location of the txt
+        :return: the total cost
         """
         n, m, adj_list = read_undirected_graph(txt_name)
         # Set all the nodes to be non-explored

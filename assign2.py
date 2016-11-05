@@ -1,4 +1,4 @@
-import itertools as iter
+import itertools as it
 from csv import reader
 from ctypes import create_unicode_buffer
 from operator import itemgetter
@@ -12,12 +12,12 @@ class Assign2(object):
     """
 
     @staticmethod
-    def read_edge_list(txt_name):
+    def read_edge_list(txt_name: str) -> tuple:
         """
         Read the first line as total number of nodes
         Read the remaining part as a list of edges
-        :param txt_name: (str) location of the txt
-        :return: (list, list) edge list, node list
+        :param txt_name: location of the txt
+        :return: edge list, node list
         """
         edge_list = []
         node_list = set()
@@ -34,12 +34,12 @@ class Assign2(object):
         return edge_list, node_list
 
     @staticmethod
-    def read_node_list(txt_name):
+    def read_node_list(txt_name: str) -> list:
         """
         Read the first line as total number of nodes, length of the bits
         Read the remaining part as a list of nodes, with each node's location is represented a binary string
-        :param txt_name: (str) location of the txt
-        :return: (str) nodes list
+        :param txt_name: location of the txt
+        :return: nodes list
         """
         node_list = []
         with open(txt_name, 'r') as csv_file:
@@ -54,23 +54,22 @@ class Assign2(object):
         return node_list
 
     @staticmethod
-    def hamming(str_1, str_2):
+    def hamming(str1: str, str2: str) -> int:
         """
         compute the string 1 and string 2's hamming distance
-        :param str_1: (str) string 1
-        :param str_2: (str) string 2
-        :return: (int) hamming distance
+        :param str1: string 1
+        :param str2: string 2
+        :return: hamming distance
         """
-        # assert len(str_1) == len(str_2), "lengths of two strings are unequal."
-        diff_list = [1 for i in range(len(str_1)) if str_1[i] != str_2[i]]
+        diff_list = [1 for i in range(len(str1)) if str1[i] != str2[i]]
         return sum(diff_list)
 
-    def question_one(self, txt_name, num_clusters=4):
+    def question_one(self, txt_name: str, num_clusters=4) -> int:
         """
         Implement a max-spacing k-clustering.
-        :param txt_name: (str) location of the txt
-        :param num_clusters: (int) the total number of clusters k
-        :return: (int) the maximum distance between k clusters
+        :param txt_name: location of the txt
+        :param num_clusters: the total number of clusters k
+        :return: the maximum distance between k clusters
         """
         edge_list, node_list = self.read_edge_list(txt_name)
         sorted_edge = sorted(edge_list, key=itemgetter(2))
@@ -86,12 +85,12 @@ class Assign2(object):
                 count -= 1
         raise IndexError
 
-    def question_two(self, txt_name, N=3):
+    def question_two(self, txt_name: str, n=3) -> int:
         """
         Implement a max-spacing k-clustering with minimum space equals to N
-        :param txt_name: (str) location of the txt
-        :param N: (int) the min-spacing
-        :return: (int) number of clusters
+        :param txt_name: location of the txt
+        :param n: the min-spacing
+        :return: number of clusters
         """
         node_list = self.read_node_list(txt_name)
         uf = UnionFind(len(node_list))
@@ -107,8 +106,8 @@ class Assign2(object):
         bit_length = len(node_list[0])
 
         # combine the all possible cases into a single list
-        comb = [list(iter.combinations(range(bit_length), n)) for n in range(1, N)]
-        comb = list(iter.chain(*comb))
+        comb = [list(it.combinations(range(bit_length), n)) for n in range(1, n)]
+        comb = list(it.chain(*comb))
 
         # if the distance is less than N, then merge into same union
         reverse = {'0': '1', '1': '0'}

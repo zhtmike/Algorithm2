@@ -53,7 +53,7 @@ class Assign4(object):
         :return: the minimum distance though all nodes
         """
         ma = self.set_boundary(graph, n)
-        val = self.compute_minimum(ma, n)  # type: np.ndarray
+        val = self.compute_minimum(ma, n)
         if np.any(val.diagonal() < 0):
             return np.nan
         else:

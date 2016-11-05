@@ -17,12 +17,12 @@ class Assign3(object):
         self.item_list = []
         self.number_of_items = 0
 
-    def read_value_weight(self, txt_name):
+    def read_value_weight(self, txt_name: str) -> list:
         """
         Read the first line as the knapsack size, number of items,
         Read the remaining part as a list of (value, weight).
-        :param txt_name: (str) location ofs the txt
-        :return: (list) list of (value, weight)
+        :param txt_name: location ofs the txt
+        :return: list of (value, weight)
         """
         self.item_list = []
         with open(txt_name, 'r') as csv_file:
@@ -33,41 +33,41 @@ class Assign3(object):
                 self.item_list.append((value, weight))
         assert self.number_of_items == len(self.item_list)
 
-    def compute_optimal(self):
+    def compute_optimal(self) -> int:
         """
         Compute the value of the optimal solution by Dynamic programming
         Wrapper of _compute_optimal
-        :return: (int) the value of optimal solution
+        :return: the value of optimal solution
         """
-        items = np.array(self.item_list, dtype=np.uint)
+        items = np.array(self.item_list, dtype=np.uint32)
         return self._compute_optimal(items, self.number_of_items, self.knapsack_size)
 
     @staticmethod
-    @nb.jit(nb.uint(nb.uint[:, :], nb.uint, nb.uint), nopython=True, cache=True)
-    def _compute_optimal(items, n, W):
+    @nb.jit(nb.uint32(nb.uint32[:, :], nb.uint32, nb.uint32), nopython=True, cache=True)
+    def _compute_optimal(items: np.ndarray, n: int, w: int) -> int:
         """
         Compute the value of the optimal solution by Dynamic programming
-        :param items: (np.array) item list
-        :param n: (int) number of items
-        :param W: (int) knapsack size
-        :return: (int) the value of optimal solution
+        :param items: item list
+        :param n: number of items
+        :param w: knapsack size
+        :return: the value of optimal solution
         """
-        ma = np.zeros((2, W + 1), dtype=np.uint)
-        value, weight = nb.uint(0), nb.uint(0)
+        ma = np.zeros((2, w + 1), dtype=np.uint32)
+        value, weight = nb.uint32([0, 0])
         for i in range(1, n + 1):
-            for x in range(W + 1):
+            for x in range(w + 1):
                 value, weight = items[i - 1]
                 if weight > x:
                     ma[i % 2, x] = ma[(i - 1) % 2, x]
                 else:
                     ma[i % 2, x] = max(ma[(i - 1) % 2, x], ma[(i - 1) % 2, x - weight] + value)
-        return ma[n % 2, W]
+        return ma[n % 2, w]
 
-    def question(self, txt_name):
+    def question(self, txt_name: str) -> int:
         """
         Calculate the optimal value under the constraint that the total weight is less than knapsack size
-        :param txt_name: (str) location of the txt
-        :return: (int) the value of optimal solution
+        :param txt_name: location of the txt
+        :return: the value of optimal solution
         """
         self.read_value_weight(txt_name)
         return self.compute_optimal()
