@@ -106,7 +106,7 @@ class Assign2(object):
         bit_length = len(node_list[0])
 
         # combine the all possible cases into a single list
-        comb = [list(it.combinations(range(bit_length), n)) for n in range(1, n)]
+        comb = [list(it.combinations(range(bit_length), i)) for i in range(1, n)]
         comb = list(it.chain(*comb))
 
         # if the distance is less than N, then merge into same union
